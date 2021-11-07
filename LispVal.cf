@@ -1,7 +1,13 @@
-EAdd. Exp  ::= Exp  "+" Exp1 ;
-ESub. Exp  ::= Exp  "-" Exp1 ;
-EMul. Exp1 ::= Exp1 "*" Exp2 ;
-EDiv. Exp1 ::= Exp1 "/" Exp2 ;
-EInt. Exp2 ::= Integer ;
+comment ";" ;
+token LispBool ({"#f"} | {"#t"}) ;
+token LispNumber (('-')? digit);
 
-coercions Exp 2 ;
+Atom. LispVal ::= Ident;
+String. LispVal ::= String;
+Number. LispVal ::= LispNumber;
+Bool. LispVal ::= LispBool;
+Nil. LispVal ::= "Nil";
+SExp. LispVal ::= "(" [LispVal] ")";
+List. LispVal ::= "'(" [LispVal] ")";
+
+separator nonempty LispVal ",";

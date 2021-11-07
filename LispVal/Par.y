@@ -8,37 +8,42 @@ import LispVal.ErrM
 
 }
 
-%name pExp Exp
-%name pExp1 Exp1
-%name pExp2 Exp2
+%name pLispVal LispVal
+%name pListLispVal ListLispVal
 -- no lexer declaration
 %monad { Err } { thenM } { returnM }
 %tokentype {Token}
 %token
-  '(' { PT _ (TS _ 1) }
-  ')' { PT _ (TS _ 2) }
-  '*' { PT _ (TS _ 3) }
-  '+' { PT _ (TS _ 4) }
-  '-' { PT _ (TS _ 5) }
-  '/' { PT _ (TS _ 6) }
+  '\'(' { PT _ (TS _ 1) }
+  '(' { PT _ (TS _ 2) }
+  ')' { PT _ (TS _ 3) }
+  ',' { PT _ (TS _ 4) }
+  'Nil' { PT _ (TS _ 5) }
 
-L_integ  { PT _ (TI $$) }
+L_ident  { PT _ (TV $$) }
+L_quoted { PT _ (TL $$) }
+L_LispBool { PT _ (T_LispBool $$) }
+L_LispNumber { PT _ (T_LispNumber $$) }
 
 
 %%
 
-Integer :: { Integer } : L_integ  { (read ( $1)) :: Integer }
+Ident   :: { Ident }   : L_ident  { Ident $1 }
+String  :: { String }  : L_quoted {  $1 }
+LispBool    :: { LispBool} : L_LispBool { LispBool ($1)}
+LispNumber    :: { LispNumber} : L_LispNumber { LispNumber ($1)}
 
-Exp :: { Exp }
-Exp : Exp '+' Exp1 { LispVal.Abs.EAdd $1 $3 }
-    | Exp '-' Exp1 { LispVal.Abs.ESub $1 $3 }
-    | Exp1 { $1 }
-Exp1 :: { Exp }
-Exp1 : Exp1 '*' Exp2 { LispVal.Abs.EMul $1 $3 }
-     | Exp1 '/' Exp2 { LispVal.Abs.EDiv $1 $3 }
-     | Exp2 { $1 }
-Exp2 :: { Exp }
-Exp2 : Integer { LispVal.Abs.EInt $1 } | '(' Exp ')' { $2 }
+LispVal :: { LispVal }
+LispVal : Ident { LispVal.Abs.Atom $1 }
+        | String { LispVal.Abs.String $1 }
+        | LispNumber { LispVal.Abs.Number $1 }
+        | LispBool { LispVal.Abs.Bool $1 }
+        | 'Nil' { LispVal.Abs.Nil }
+        | '(' ListLispVal ')' { LispVal.Abs.SExp $2 }
+        | '\'(' ListLispVal ')' { LispVal.Abs.List $2 }
+ListLispVal :: { [LispVal] }
+ListLispVal : LispVal { (:[]) $1 }
+            | LispVal ',' ListLispVal { (:) $1 $3 }
 {
 
 returnM :: a -> Err a

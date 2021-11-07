@@ -6,7 +6,7 @@ module Main where
 import Control.Monad.Reader (MonadIO, MonadReader, ReaderT)
 import qualified Data.Map as M
 import qualified Data.Text as T
-import LispVal.Abs
+import qualified LispVal.Abs as A
 import LispVal.ErrM
 import LispVal.Lex
 import LispVal.Par
@@ -25,7 +25,7 @@ main :: IO ()
 main = do
     args <- getArgs
     let ts = myLexer $ head args
-    case pExp ts of
+    case pLispVal ts of
         Bad s -> do
             putStrLn "\nParse Failed...\n"
             putStrLn s
@@ -33,12 +33,12 @@ main = do
         Ok tree -> do
             putStrLn "\nParse Successful!"
             showTree tree
-            calc tree
+            -- calc tree
             exitSuccess
     putStrLn ""
 
-calc :: Exp -> IO ()
-calc e = print $ transExp e
+-- calc :: A.LispVal -> IO ()
+-- calc e = print $ transExp e
 
 type EnvCtx = M.Map T.Text LispVal
 

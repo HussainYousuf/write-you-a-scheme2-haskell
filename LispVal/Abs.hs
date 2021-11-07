@@ -7,11 +7,17 @@ module LispVal.Abs where
 
 
 
-data Exp
-    = EAdd Exp Exp
-    | ESub Exp Exp
-    | EMul Exp Exp
-    | EDiv Exp Exp
-    | EInt Integer
+newtype Ident = Ident String deriving (Eq, Ord, Show, Read)
+newtype LispBool = LispBool String deriving (Eq, Ord, Show, Read)
+newtype LispNumber = LispNumber String
+  deriving (Eq, Ord, Show, Read)
+data LispVal
+    = Atom Ident
+    | String String
+    | Number LispNumber
+    | Bool LispBool
+    | Nil
+    | SExp [LispVal]
+    | List [LispVal]
   deriving (Eq, Ord, Show, Read)
 

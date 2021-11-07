@@ -64,9 +64,9 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    [] -> hGetContents stdin >>= run 2 pExp
-    "-s":fs -> mapM_ (runFile 0 pExp) fs
-    fs -> mapM_ (runFile 2 pExp) fs
+    [] -> hGetContents stdin >>= run 2 pLispVal
+    "-s":fs -> mapM_ (runFile 0 pLispVal) fs
+    fs -> mapM_ (runFile 2 pLispVal) fs
 
 
 

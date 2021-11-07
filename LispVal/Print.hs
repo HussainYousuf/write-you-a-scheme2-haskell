@@ -78,14 +78,28 @@ instance Print Double where
   prt _ x = doc (shows x)
 
 
+instance Print Ident where
+  prt _ (Ident i) = doc (showString ( i))
 
 
-instance Print Exp where
+instance Print LispBool where
+  prt _ (LispBool i) = doc (showString ( i))
+
+
+instance Print LispNumber where
+  prt _ (LispNumber i) = doc (showString ( i))
+
+
+
+instance Print LispVal where
   prt i e = case e of
-    EAdd exp1 exp2 -> prPrec i 0 (concatD [prt 0 exp1, doc (showString "+"), prt 1 exp2])
-    ESub exp1 exp2 -> prPrec i 0 (concatD [prt 0 exp1, doc (showString "-"), prt 1 exp2])
-    EMul exp1 exp2 -> prPrec i 1 (concatD [prt 1 exp1, doc (showString "*"), prt 2 exp2])
-    EDiv exp1 exp2 -> prPrec i 1 (concatD [prt 1 exp1, doc (showString "/"), prt 2 exp2])
-    EInt n -> prPrec i 2 (concatD [prt 0 n])
-
+    Atom id -> prPrec i 0 (concatD [prt 0 id])
+    String str -> prPrec i 0 (concatD [prt 0 str])
+    Number lispnumber -> prPrec i 0 (concatD [prt 0 lispnumber])
+    Bool lispbool -> prPrec i 0 (concatD [prt 0 lispbool])
+    Nil -> prPrec i 0 (concatD [doc (showString "Nil")])
+    SExp lispvals -> prPrec i 0 (concatD [doc (showString "("), prt 0 lispvals, doc (showString ")")])
+    List lispvals -> prPrec i 0 (concatD [doc (showString "'("), prt 0 lispvals, doc (showString ")")])
+  prtList _ [x] = (concatD [prt 0 x])
+  prtList _ (x:xs) = (concatD [prt 0 x, doc (showString ","), prt 0 xs])
 
