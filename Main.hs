@@ -18,14 +18,12 @@ import System.Exit
 showTree :: (Show a, Print a) => a -> IO ()
 showTree tree =
     do
-        putStrLn $ "\n[Abstract Syntax]\n\n" ++ show tree
-        putStrLn $ "\n[Linearized tree]\n\n" ++ printTree tree
+        putStrLn $ "\n[Abstract Syntax]\n" ++ show tree
 
 main :: IO ()
 main = do
-    args <- getArgs
-    let ts = myLexer $ head args
-    case pLispVal ts of
+    args <- getContents
+    case pLispVal $ myLexer args of
         Bad s -> do
             putStrLn "\nParse Failed...\n"
             putStrLn s
@@ -35,6 +33,7 @@ main = do
             showTree tree
             -- calc tree
             exitSuccess
+        _ -> undefined 
     putStrLn ""
 
 -- calc :: A.LispVal -> IO ()

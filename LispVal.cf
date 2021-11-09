@@ -8,6 +8,7 @@ Number. LispVal ::= LispNumber;
 Bool. LispVal ::= LispBool;
 Nil. LispVal ::= "Nil";
 SExp. LispVal ::= "(" [LispVal] ")";
-List. LispVal ::= "'(" [LispVal] ")";
+Quote. LispVal ::= "'" LispVal;
+Prog. LispVal ::= [LispVal];
 
-separator nonempty LispVal ",";
+separator LispVal "";
