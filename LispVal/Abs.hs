@@ -10,15 +10,17 @@ import Prelude (String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
 
+data Prog = Prog [LispVal]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data LispVal
     = Atom Ident
     | String String
     | Number LispNumber
     | Bool LispBool
     | Nil
-    | SExp [LispVal]
     | Quote LispVal
-    | Prog [LispVal]
+    | SExp [LispVal]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Ident = Ident String

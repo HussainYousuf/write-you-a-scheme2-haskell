@@ -8,6 +8,7 @@
 module LispVal.Par
   ( happyError
   , myLexer
+  , pProg
   , pLispVal
   , pListLispVal
   ) where
@@ -19,6 +20,7 @@ import LispVal.Lex
 
 }
 
+%name pProg Prog
 %name pLispVal LispVal
 %name pListLispVal ListLispVal
 -- no lexer declaration
@@ -48,6 +50,9 @@ LispBool  : L_LispBool { LispVal.Abs.LispBool $1 }
 LispNumber :: { LispVal.Abs.LispNumber }
 LispNumber  : L_LispNumber { LispVal.Abs.LispNumber $1 }
 
+Prog :: { LispVal.Abs.Prog }
+Prog : ListLispVal { LispVal.Abs.Prog $1 }
+
 LispVal :: { LispVal.Abs.LispVal }
 LispVal
   : Ident { LispVal.Abs.Atom $1 }
@@ -55,9 +60,8 @@ LispVal
   | LispNumber { LispVal.Abs.Number $1 }
   | LispBool { LispVal.Abs.Bool $1 }
   | 'Nil' { LispVal.Abs.Nil }
-  | '(' ListLispVal ')' { LispVal.Abs.SExp $2 }
   | '\'' LispVal { LispVal.Abs.Quote $2 }
-  | ListLispVal { LispVal.Abs.Prog $1 }
+  | '(' ListLispVal ')' { LispVal.Abs.SExp $2 }
 
 ListLispVal :: { [LispVal.Abs.LispVal] }
 ListLispVal

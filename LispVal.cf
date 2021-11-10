@@ -2,13 +2,13 @@ comment ";" ;
 token LispBool ({"#f"} | {"#t"}) ;
 token LispNumber (('-')? digit);
 
+Prog. Prog ::= [LispVal];
 Atom. LispVal ::= Ident;
 String. LispVal ::= String;
 Number. LispVal ::= LispNumber;
 Bool. LispVal ::= LispBool;
 Nil. LispVal ::= "Nil";
-SExp. LispVal ::= "(" [LispVal] ")";
 Quote. LispVal ::= "'" LispVal;
-Prog. LispVal ::= [LispVal];
+SExp. LispVal ::= "(" [LispVal] ")";
 
 separator LispVal "";

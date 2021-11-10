@@ -144,6 +144,10 @@ instance Print LispVal.Abs.LispBool where
   prt _ (LispVal.Abs.LispBool i) = doc $ showString i
 instance Print LispVal.Abs.LispNumber where
   prt _ (LispVal.Abs.LispNumber i) = doc $ showString i
+instance Print LispVal.Abs.Prog where
+  prt i = \case
+    LispVal.Abs.Prog lispvals -> prPrec i 0 (concatD [prt 0 lispvals])
+
 instance Print LispVal.Abs.LispVal where
   prt i = \case
     LispVal.Abs.Atom id_ -> prPrec i 0 (concatD [prt 0 id_])
@@ -151,9 +155,8 @@ instance Print LispVal.Abs.LispVal where
     LispVal.Abs.Number lispnumber -> prPrec i 0 (concatD [prt 0 lispnumber])
     LispVal.Abs.Bool lispbool -> prPrec i 0 (concatD [prt 0 lispbool])
     LispVal.Abs.Nil -> prPrec i 0 (concatD [doc (showString "Nil")])
-    LispVal.Abs.SExp lispvals -> prPrec i 0 (concatD [doc (showString "("), prt 0 lispvals, doc (showString ")")])
     LispVal.Abs.Quote lispval -> prPrec i 0 (concatD [doc (showString "'"), prt 0 lispval])
-    LispVal.Abs.Prog lispvals -> prPrec i 0 (concatD [prt 0 lispvals])
+    LispVal.Abs.SExp lispvals -> prPrec i 0 (concatD [doc (showString "("), prt 0 lispvals, doc (showString ")")])
 
 instance Print [LispVal.Abs.LispVal] where
   prt _ [] = concatD []

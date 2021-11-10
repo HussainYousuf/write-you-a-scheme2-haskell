@@ -20,7 +20,7 @@ import Control.Monad      ( when )
 
 import LispVal.Abs   ()
 import LispVal.Lex   ( Token, mkPosToken )
-import LispVal.Par   ( pLispVal, myLexer )
+import LispVal.Par   ( pProg, myLexer )
 import LispVal.Print ( Print, printTree )
 import LispVal.Skel  ()
 
@@ -72,7 +72,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run 2 pLispVal
-    "-s":fs    -> mapM_ (runFile 0 pLispVal) fs
-    fs         -> mapM_ (runFile 2 pLispVal) fs
+    []         -> getContents >>= run 2 pProg
+    "-s":fs    -> mapM_ (runFile 0 pProg) fs
+    fs         -> mapM_ (runFile 2 pProg) fs
 

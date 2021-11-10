@@ -23,7 +23,7 @@ showTree tree =
 main :: IO ()
 main = do
     args <- getContents
-    case pLispVal $ myLexer args of
+    case pProg $ myLexer args of
         Bad s -> do
             putStrLn "\nParse Failed...\n"
             putStrLn s
