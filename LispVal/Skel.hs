@@ -27,8 +27,8 @@ transLispNumber :: LispVal.Abs.LispNumber -> Result
 transLispNumber x = case x of
   LispVal.Abs.LispNumber string -> failure x
 
-transProg :: LispVal.Abs.Prog -> Result
-transProg x = case x of
+transProgram :: LispVal.Abs.Program -> Result
+transProgram x = case x of
   LispVal.Abs.Prog lispvals -> failure x
 
 transLispVal :: LispVal.Abs.LispVal -> Result
@@ -37,6 +37,5 @@ transLispVal x = case x of
   LispVal.Abs.String string -> failure x
   LispVal.Abs.Number lispnumber -> failure x
   LispVal.Abs.Bool lispbool -> failure x
-  LispVal.Abs.Nil -> failure x
   LispVal.Abs.Quote lispval -> failure x
-  LispVal.Abs.SExp lispvals -> failure x
+  LispVal.Abs.List lispvals -> failure x

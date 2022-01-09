@@ -19,7 +19,7 @@ all : LispVal/Test
 # Rules for building the parser.
 
 LispVal/Abs.hs LispVal/Lex.x LispVal/Par.y LispVal/Print.hs LispVal/Test.hs : LispVal.cf
-	bnfc --haskell -d LispVal.cf
+	bnfc --haskell -d --text-token LispVal.cf
 
 %.hs : %.y
 	${HAPPY} ${HAPPY_OPTS} $<

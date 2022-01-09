@@ -12,15 +12,16 @@ import Prelude
   , Show, show
   , IO, (>>), (>>=), mapM_, putStrLn
   , FilePath
-  , getContents, readFile
   )
+import Data.Text.IO   ( getContents, readFile )
+import qualified Data.Text
 import System.Environment ( getArgs )
 import System.Exit        ( exitFailure, exitSuccess )
 import Control.Monad      ( when )
 
 import LispVal.Abs   ()
 import LispVal.Lex   ( Token, mkPosToken )
-import LispVal.Par   ( pProg, myLexer )
+import LispVal.Par   ( pProgram, myLexer )
 import LispVal.Print ( Print, printTree )
 import LispVal.Skel  ()
 
@@ -34,7 +35,7 @@ putStrV v s = when (v > 1) $ putStrLn s
 runFile :: (Print a, Show a) => Verbosity -> ParseFun a -> FilePath -> IO ()
 runFile v p f = putStrLn f >> readFile f >>= run v p
 
-run :: (Print a, Show a) => Verbosity -> ParseFun a -> String -> IO ()
+run :: (Print a, Show a) => Verbosity -> ParseFun a -> Data.Text.Text -> IO ()
 run v p s =
   case p ts of
     Left err -> do
@@ -72,7 +73,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run 2 pProg
-    "-s":fs    -> mapM_ (runFile 0 pProg) fs
-    fs         -> mapM_ (runFile 2 pProg) fs
+    []         -> getContents >>= run 2 pProgram
+    "-s":fs    -> mapM_ (runFile 0 pProgram) fs
+    fs         -> mapM_ (runFile 2 pProgram) fs
 

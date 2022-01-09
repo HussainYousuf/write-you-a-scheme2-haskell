@@ -8,7 +8,7 @@
 module LispVal.Par
   ( happyError
   , myLexer
-  , pProg
+  , pProgram
   , pLispVal
   , pListLispVal
   ) where
@@ -17,10 +17,11 @@ import Prelude
 
 import qualified LispVal.Abs
 import LispVal.Lex
+import qualified Data.Text
 
 }
 
-%name pProg Prog
+%name pProgram Program
 %name pLispVal LispVal
 %name pListLispVal ListLispVal
 -- no lexer declaration
@@ -30,7 +31,6 @@ import LispVal.Lex
   '\''         { PT _ (TS _ 1)          }
   '('          { PT _ (TS _ 2)          }
   ')'          { PT _ (TS _ 3)          }
-  'Nil'        { PT _ (TS _ 4)          }
   L_Ident      { PT _ (TV $$)           }
   L_quoted     { PT _ (TL $$)           }
   L_LispBool   { PT _ (T_LispBool $$)   }
@@ -42,7 +42,7 @@ Ident :: { LispVal.Abs.Ident }
 Ident  : L_Ident { LispVal.Abs.Ident $1 }
 
 String  :: { String }
-String   : L_quoted { $1 }
+String   : L_quoted { (Data.Text.unpack $1) }
 
 LispBool :: { LispVal.Abs.LispBool }
 LispBool  : L_LispBool { LispVal.Abs.LispBool $1 }
@@ -50,8 +50,8 @@ LispBool  : L_LispBool { LispVal.Abs.LispBool $1 }
 LispNumber :: { LispVal.Abs.LispNumber }
 LispNumber  : L_LispNumber { LispVal.Abs.LispNumber $1 }
 
-Prog :: { LispVal.Abs.Prog }
-Prog : ListLispVal { LispVal.Abs.Prog $1 }
+Program :: { LispVal.Abs.Program }
+Program : ListLispVal { LispVal.Abs.Prog $1 }
 
 LispVal :: { LispVal.Abs.LispVal }
 LispVal
@@ -59,9 +59,8 @@ LispVal
   | String { LispVal.Abs.String $1 }
   | LispNumber { LispVal.Abs.Number $1 }
   | LispBool { LispVal.Abs.Bool $1 }
-  | 'Nil' { LispVal.Abs.Nil }
   | '\'' LispVal { LispVal.Abs.Quote $2 }
-  | '(' ListLispVal ')' { LispVal.Abs.SExp $2 }
+  | '(' ListLispVal ')' { LispVal.Abs.List $2 }
 
 ListLispVal :: { [LispVal.Abs.LispVal] }
 ListLispVal
@@ -79,7 +78,7 @@ happyError ts = Left $
     [Err _] -> " due to lexer error"
     t:_     -> " before `" ++ (prToken t) ++ "'"
 
-myLexer :: String -> [Token]
+myLexer :: Data.Text.Text -> [Token]
 myLexer = tokens
 
 }

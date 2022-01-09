@@ -21,6 +21,7 @@ import Prelude
   )
 import Data.Char ( Char, isSpace )
 import qualified LispVal.Abs
+import qualified Data.Text
 
 -- | The top-level printing method.
 
@@ -139,12 +140,12 @@ instance Print Double where
   prt _ x = doc (shows x)
 
 instance Print LispVal.Abs.Ident where
-  prt _ (LispVal.Abs.Ident i) = doc $ showString i
+  prt _ (LispVal.Abs.Ident i) = doc $ showString (Data.Text.unpack i)
 instance Print LispVal.Abs.LispBool where
-  prt _ (LispVal.Abs.LispBool i) = doc $ showString i
+  prt _ (LispVal.Abs.LispBool i) = doc $ showString (Data.Text.unpack i)
 instance Print LispVal.Abs.LispNumber where
-  prt _ (LispVal.Abs.LispNumber i) = doc $ showString i
-instance Print LispVal.Abs.Prog where
+  prt _ (LispVal.Abs.LispNumber i) = doc $ showString (Data.Text.unpack i)
+instance Print LispVal.Abs.Program where
   prt i = \case
     LispVal.Abs.Prog lispvals -> prPrec i 0 (concatD [prt 0 lispvals])
 
@@ -154,9 +155,8 @@ instance Print LispVal.Abs.LispVal where
     LispVal.Abs.String str -> prPrec i 0 (concatD [printString str])
     LispVal.Abs.Number lispnumber -> prPrec i 0 (concatD [prt 0 lispnumber])
     LispVal.Abs.Bool lispbool -> prPrec i 0 (concatD [prt 0 lispbool])
-    LispVal.Abs.Nil -> prPrec i 0 (concatD [doc (showString "Nil")])
     LispVal.Abs.Quote lispval -> prPrec i 0 (concatD [doc (showString "'"), prt 0 lispval])
-    LispVal.Abs.SExp lispvals -> prPrec i 0 (concatD [doc (showString "("), prt 0 lispvals, doc (showString ")")])
+    LispVal.Abs.List lispvals -> prPrec i 0 (concatD [doc (showString "("), prt 0 lispvals, doc (showString ")")])
 
 instance Print [LispVal.Abs.LispVal] where
   prt _ [] = concatD []

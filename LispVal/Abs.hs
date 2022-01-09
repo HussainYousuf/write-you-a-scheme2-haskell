@@ -10,7 +10,9 @@ import Prelude (String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
 
-data Prog = Prog [LispVal]
+import qualified Data.Text
+
+data Program = Prog [LispVal]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LispVal
@@ -18,17 +20,16 @@ data LispVal
     | String String
     | Number LispNumber
     | Bool LispBool
-    | Nil
     | Quote LispVal
-    | SExp [LispVal]
+    | List [LispVal]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-newtype Ident = Ident String
+newtype Ident = Ident Data.Text.Text
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype LispBool = LispBool String
+newtype LispBool = LispBool Data.Text.Text
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype LispNumber = LispNumber String
+newtype LispNumber = LispNumber Data.Text.Text
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
